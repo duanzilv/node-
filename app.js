@@ -82,6 +82,49 @@ app.post('/delete', (res, req) => {
     }
 })
 
+//2.5 查询单个英雄详情接口
+app.get('/search', (res, req) => {
+    let isOK = db.getHeroById(res.query.id)
+    if (isOK == null) {
+        req.send({
+            code: 500,
+            msg: '参数错误',
+            data: null
+        })
+    } else {
+        req.send({
+            code: 200,
+            msg: '查询成功',
+            data: isOK
+        })
+    }
+})
+
+// 2.6  修改英雄接口
+app.post('/edit', upload.single('icon'), (res, req) => {
+    if (!res.body.id || !res.body.name || !res.body.skill || !res.file) {
+        req.send({
+            code: 500,
+            msg: '参数错误'
+        })
+        return
+    }
+    let { id, name, skill,} = res.body
+    let icon = res.file.filename
+    let isOK = db.editHero({id, name, skill, icon})
+    if(isOK) {
+        req.send({
+            code: 200,
+            msg: '修改成功'
+        })
+    } else {
+        req.send({
+            code: 500,
+            msg: '修改失败'
+        })  
+    }
+})
+
 app.listen(3747, err => {
     if (err == null) {
         console.log('启动成功~3747')
