@@ -92,7 +92,7 @@ module.exports = {
       filterArr[0].name = name;
       filterArr[0].skill = skill;
 
-      // if (icon) // Boolean(icon) false: 0 -0 NaN '' undefeind null ...
+      if (icon) // Boolean(icon) false: 0 -0 NaN '' undefeind null ...
       filterArr[0].icon = icon;
 
       // 保存回去

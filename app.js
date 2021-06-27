@@ -3,6 +3,7 @@ const db = require('./utils/db.js')
 const multer = require('multer')
 const upload = multer({ dest: './web/uploads/' })
 const app = express()
+app.use(express.static('./web/'));
 
 /**
  *  parse application/x-www-form-urlencoded
@@ -16,7 +17,7 @@ app.use(express.json())
 // 2.1 登录接口编写
 app.post('/login', (res, req) => {
     let { userName, passWord } = res.body
-    if (userName === 'Raymond' && passWord === '123') {
+    if (userName == 'Raymond' && passWord == '123') {
         req.send({
             code: 200,
             msg: '登录成功'
@@ -102,7 +103,7 @@ app.get('/search', (res, req) => {
 
 // 2.6  修改英雄接口
 app.post('/edit', upload.single('icon'), (res, req) => {
-    if (!res.body.id || !res.body.name || !res.body.skill || !res.file) {
+    if (!res.body.id || !res.body.name || !res.body.skill ) {
         req.send({
             code: 500,
             msg: '参数错误'
@@ -110,7 +111,11 @@ app.post('/edit', upload.single('icon'), (res, req) => {
         return
     }
     let { id, name, skill,} = res.body
-    let icon = res.file.filename
+    let icon = undefined;
+    // b1.如果 上传了文件
+    if (res.file != undefined) {
+        icon = res.file.filename; // 上传后在服务器端随机生成的文件名字
+    }
     let isOK = db.editHero({id, name, skill, icon})
     if(isOK) {
         req.send({
